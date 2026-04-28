@@ -49,8 +49,9 @@ Para ejecutar el proyecto en local solo necesitas:
 
 ```bash
 docker compose up --build
+```
 
-# TankYou
+---
 
 ## 🇬🇧 Description
 
@@ -101,3 +102,4 @@ To run the project locally you only need:
 
 ```bash
 docker compose up --build
+```
