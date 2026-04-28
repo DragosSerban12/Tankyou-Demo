@@ -49,3 +49,55 @@ Para ejecutar el proyecto en local solo necesitas:
 
 ```bash
 docker compose up --build
+
+# TankYou
+
+## 🇬🇧 Description
+
+TankYou is a **remote fuel recharge web application**, developed as a final DAW project.
+
+The platform allows customers to manage the entire process online:
+
+- User registration and login
+- Vehicle registration and management
+- Booking recharges by selecting **date and time**
+- Scheduling system with a **maximum number of recharges per time slot**
+- Automatic selection of the most convenient available slot
+- Order and recharge management from an internal panel
+
+The application is designed to digitalize and optimize the scheduled refueling process.
+
+## 🚀 Live Demo
+
+https://tankyouapp.online/
+
+## 🛠 Technologies Used
+
+- Django
+- PostgreSQL
+- Docker
+- Docker Compose
+- Docker Swarm
+- Nginx
+- HTML / CSS / JavaScript
+
+## ⚙️ Infrastructure
+
+- Real server deployment
+- Development / production environment separation
+- Full containerization with Docker
+- Reverse proxy with Nginx
+
+## 💻 Local Setup
+
+> The production configuration belongs to a private server and is not included in this repository.
+
+To run the project locally you only need:
+
+- Docker
+- Docker Compose
+
+### Steps
+
+```bash
+docker compose up --build
