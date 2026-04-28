@@ -27,3 +27,14 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Coverage / tests
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Migrations temp / local
+*.sqlite3
+
+# Mac/Linux temp
+*.swp

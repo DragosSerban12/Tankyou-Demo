@@ -25,8 +25,7 @@ IS_PROD = DJANGO_ENV == "production"
 
 # SECURITY
 SECRET_KEY = get_env_or_file("SECRET_KEY", "django-insecure-dev-only")
-# DEBUG = not IS_PROD
-DEBUG = True
+DEBUG = not IS_PROD
 
 
 # HOSTS
@@ -49,7 +48,7 @@ if IS_PROD:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = False  # nginx ya redirige
+    SECURE_SSL_REDIRECT = False
 else:
     CSRF_COOKIE_SECURE = False
     SESSION_COOKIE_SECURE = False
@@ -63,16 +62,17 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
+    "django.contrib.sites",
+
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
 
     "crispy_forms",
     "crispy_bootstrap5",
     "rest_framework",
-    'djoser',
-    'rest_framework_simplejwt',
+    "djoser",
+    "rest_framework_simplejwt",
 
     "common",
     "users",
@@ -88,6 +88,7 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
+
 # MIDDLEWARE
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -97,7 +98,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'allauth.account.middleware.AccountMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 
@@ -122,18 +123,22 @@ TEMPLATES = [
 ]
 
 
+# AUTH
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
 )
+
+AUTH_USER_MODEL = "users.Usuario"
+
 
 # DATABASE
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": get_env_or_file("POSTGRES_DB", "dragosDB"),
-        "USER": get_env_or_file("POSTGRES_USER", "dragos"),
-        "PASSWORD": get_env_or_file("POSTGRES_PASSWORD", "123"),
+        "NAME": get_env_or_file("POSTGRES_DB", "tankyou"),
+        "USER": get_env_or_file("POSTGRES_USER", "postgres"),
+        "PASSWORD": get_env_or_file("POSTGRES_PASSWORD", ""),
         "HOST": os.environ.get("POSTGRES_HOST", "db"),
         "PORT": "5432",
     }
@@ -156,45 +161,47 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+
 # MEDIA
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR.parent, 'media')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR.parent, "media")
 
 
-
-# AUTH / UI
+# UI / LOGIN
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-AUTH_USER_MODEL = "users.Usuario"
-
 LOGIN_URL = "account_login"
 LOGIN_REDIRECT_URL = "Home"
 LOGOUT_REDIRECT_URL = "Home"
 
+
 # EMAIL
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'dawpruebadragos@gmail.com'
-EMAIL_HOST_PASSWORD = 'vdkz vxps oupg dwip'
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
+# JWT
 SIMPLE_JWT = {
-    'AUTH_HEADER_TYPES': ('JWT',),
-    'BLACKLIST_AFTER_ROTATION': False,
+    "AUTH_HEADER_TYPES": ("JWT",),
+    "BLACKLIST_AFTER_ROTATION": False,
 }
 
+
+# DRF
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
     ),
 }
