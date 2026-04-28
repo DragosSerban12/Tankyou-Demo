@@ -1,0 +1,18 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./TankYouProj:/code
+      - ./media:/code/media
+    environment:
+      ENVIRONMENT: development
+      POSTGRES_HOST: db
+      POSTGRES_DB: dragosDB
+      POSTGRES_USER: dragos
+      POSTGRES_PASSWORD: "123"
+    ports:
+      - "8000:8000"
+  

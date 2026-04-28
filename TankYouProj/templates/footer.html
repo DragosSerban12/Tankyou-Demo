@@ -1,0 +1,61 @@
+<footer class="main-footer mt-auto">
+    <div class="container">
+        <div class="row">
+
+            <!-- Logo -->
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="footer-logo mb-3">TankYou</div>
+                <p style="font-size: 0.875rem; color: rgba(255,255,255,0.5); max-width: 280px; line-height: 1.6;">
+                    Servicio de recarga telematica de combustible. Reposta de forma rapida, segura y 100% digital.
+                </p>
+            </div>
+
+            <!-- Links -->
+            <div class="col-6 col-lg-2 mb-4 mb-lg-0">
+                <h5>Plataforma</h5>
+                <ul class="list-unstyled d-flex flex-column gap-2">
+                    <li><a href="{% url 'Home' %}">Inicio</a></li>
+                    <li><a href="{% url 'usuario_crear' %}">Crear cuenta</a></li>
+                    <li><a href="{% url 'account_login' %}">Iniciar sesion</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-2 mb-4 mb-lg-0">
+                <h5>Servicios</h5>
+                <ul class="list-unstyled d-flex flex-column gap-2">
+                    <li><a href="{% url 'recharges' %}">Recargas</a></li>
+                    <li><a href="{% url 'orders' %}">Pedidos</a></li>
+                    <li><a href="{% url 'payments' %}">Pagos</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-2 mb-4 mb-lg-0">
+                <h5>Legal</h5>
+                <ul class="list-unstyled d-flex flex-column gap-2">
+                    <li><a href="#">Privacidad</a></li>
+                    <li><a href="#">Terminos</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+
+            <div class="col-6 col-lg-2">
+                <h5>Contacto</h5>
+                <ul class="list-unstyled d-flex flex-column gap-2">
+                    <li><a href="mailto:contacto@tankyou.com">Email</a></li>
+                    <li><a href="tel:+34600000000">+34 600 000 000</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Pie de pagina -->
+        <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <small style="color: rgba(255,255,255,0.35);">
+                &copy; 2026 TankYou. Todos los derechos reservados.
+            </small>
+            <small style="color: rgba(255,255,255,0.35);">
+                Proyecto intermodular
+            </small>
+        </div>
+    </div>
+</footer>

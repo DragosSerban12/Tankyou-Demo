@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Anadir vehiculo | TankYou{% endblock %}
+
+{% block content %}
+
+<script src="{% static 'js/vehiculo_form_validation.js' %}" defer></script>
+<div class="row justify-content-center py-4">
+    <div class="col-md-6">
+
+        <div class="ty-card" style="padding: 2rem;">
+            <div class="d-flex align-items-center gap-3 mb-4 pb-3" style="border-bottom: 1px solid var(--ty-border);">
+                <div style="width: 40px; height: 40px; background: rgba(245,158,11,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="car" style="width:20px;height:20px;color:var(--ty-accent);"></i>
+                </div>
+                <div>
+                    <h5 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 2px;">Anadir vehiculo</h5>
+                    <p style="font-size: 0.82rem; color: var(--ty-text-muted); margin-bottom: 0;">Completa los datos de tu vehiculo</p>
+                </div>
+            </div>
+
+            <!-- clase vehiculo-form -->
+            <form method="post" enctype="multipart/form-data" class="ty-form vehiculo-form" >
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div style="color: var(--ty-danger); font-size: 0.8rem; margin-top: 4px;">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Fotos del vehiculo (minimo 4, maximo 10)
+                    </label>
+                    <input
+                        type="file"
+                        name="fotos"
+                        multiple
+                        class="form-control"
+                        required
+                    >
+                    <div style="font-size: 0.78rem; color: var(--ty-text-muted); margin-top: 4px;">
+                        Formatos aceptados: JPG, PNG. Maximo 10MB por imagen.
+                    </div>
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger d-flex align-items-center gap-2" style="border-radius: 10px; font-size: 0.875rem;">
+                        <i data-lucide="alert-circle" style="width:16px;height:16px;flex-shrink:0;"></i>
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-between pt-3" style="border-top: 1px solid var(--ty-border);">
+                    <a href="{% url 'vehicles' %}" class="btn btn-ty-outline">
+                        <i data-lucide="arrow-left" style="width:14px;height:14px;margin-right:4px;"></i>
+                        Cancelar
+                    </a>
+
+                    <button type="submit" id="submit-boton" class="btn btn-ty-dark">
+                        Guardar vehiculo
+                        <i data-lucide="check" style="width:14px;height:14px;margin-left:4px;"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

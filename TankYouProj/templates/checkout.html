@@ -1,0 +1,465 @@
+{% extends "base.html" %}
+
+{% block title %}Pago | TankYou{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ── Checkout layout ── */
+  .checkout-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .checkout-wrapper { grid-template-columns: 1fr; }
+  }
+
+  /* ── Credit card widget ── */
+  .card-scene {
+    width: 100%;
+    perspective: 1000px;
+    margin-bottom: 1.5rem;
+  }
+  .credit-card {
+    width: 100%;
+    max-width: 360px;
+    height: 200px;
+    margin: 0 auto;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 18px;
+  }
+  .credit-card.flipped { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 18px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  }
+  .card-front {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: white;
+  }
+  .card-front::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .card-front::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -40px;
+    width: 250px; height: 250px;
+    border-radius: 50%;
+    background: rgba(40,167,69,0.1);
+  }
+  .card-back {
+    background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+    color: white;
+    transform: rotateY(180deg);
+  }
+  .card-logo {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--ty-accent, #28a745);
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+  }
+  .card-number-display {
+    font-size: 1.3rem;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 4px;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+  }
+  .card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    z-index: 1;
+  }
+  .card-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    opacity: 0.7;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+  .card-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .card-chip {
+    width: 40px; height: 30px;
+    background: linear-gradient(135deg, #d4af37, #f5d060);
+    border-radius: 5px;
+    position: relative;
+    z-index: 1;
+  }
+  /* Back face elements */
+  .card-stripe {
+    height: 40px;
+    background: rgba(0,0,0,0.5);
+    margin: 1.5rem -1.5rem 1rem;
+  }
+  .card-cvv-area {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .cvv-box {
+    background: white;
+    color: #333;
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 4px;
+    font-weight: 700;
+    min-width: 70px;
+    text-align: center;
+  }
+
+  /* ── Form styles ── */
+  .checkout-form-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    border: 1px solid var(--ty-border, #e9ecef);
+  }
+  .checkout-form-card h5 {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--ty-text-body, #1a1a2a);
+  }
+  .form-group-custom { margin-bottom: 1.2rem; }
+  .form-group-custom label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ty-text-muted, #6c757d);
+    margin-bottom: 6px;
+    display: block;
+  }
+  .form-control-custom {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--ty-border, #e9ecef);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    background: #fafafa;
+  }
+  .form-control-custom:focus {
+    border-color: var(--ty-accent, #28a745);
+    box-shadow: 0 0 0 3px rgba(40,167,69,0.12);
+    background: white;
+  }
+  .form-control-custom.error { border-color: #dc3545; }
+  .form-control-custom.valid { border-color: #28a745; }
+  .field-error {
+    color: #dc3545;
+    font-size: 0.78rem;
+    margin-top: 4px;
+    display: none;
+  }
+  .field-error.show { display: block; }
+
+  /* ── Summary card ── */
+  .summary-card {
+    background: linear-gradient(135deg, rgba(40,167,69,0.05), rgba(40,167,69,0.02));
+    border: 1px solid rgba(40,167,69,0.2);
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    font-size: 0.9rem;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .label { color: var(--ty-text-muted, #6c757d); }
+  .summary-row .value { font-weight: 600; }
+  .summary-total {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 2px solid var(--ty-accent, #28a745) !important;
+    font-size: 1.1rem !important;
+  }
+  .summary-total .value { color: var(--ty-accent, #28a745); font-size: 1.2rem; }
+
+  /* ── Pay button ── */
+  .pay-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #28a745, #20c55a);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(40,167,69,0.35);
+  }
+  .pay-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40,167,69,0.4);
+  }
+  .pay-btn:active { transform: translateY(0); }
+  .pay-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .secure-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--ty-text-muted, #6c757d);
+    margin-top: 0.75rem;
+  }
+  .card-types {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+  .card-type-badge {
+    padding: 4px 10px;
+    border: 1px solid var(--ty-border, #e9ecef);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ty-text-muted, #6c757d);
+    background: white;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2>Pago seguro</h2>
+    <p style="color: var(--ty-text-muted); font-size: 0.9rem; margin-bottom: 0;">
+      Introduce los datos de tu tarjeta para completar el pedido
+    </p>
+  </div>
+</div>
+
+<div class="checkout-wrapper">
+
+  <div>
+    <!-- Resumen del pedido -->
+    <div class="checkout-form-card">
+      <h5><i data-lucide="receipt" style="width:18px; margin-right:6px; color: var(--ty-accent);"></i>Resumen del pedido</h5>
+      <div class="summary-card">
+        <div class="summary-row">
+          <span class="label">Vehículo</span>
+          <span class="value">{{ pedido_data.vehiculo_str }}</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Horario</span>
+          <span class="value">{{ pedido_data.turno_str }}</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Litros</span>
+          <span class="value">{{ pedido_data.cantidad_litros }} L</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Ubicación</span>
+          <span class="value">{{ pedido_data.ubicacion }}</span>
+        </div>
+        <div class="summary-row summary-total">
+          <span class="label"><strong>Total</strong></span>
+          <span class="value">{{ pedido_data.precio_total }} €</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forma de pago -->
+  <div class="checkout-form-card">
+    <h5><i data-lucide="credit-card" style="width:18px; margin-right:6px; color: var(--ty-accent);"></i>Datos de pago</h5>
+
+    <div class="card-types">
+      <span class="card-type-badge">VISA</span>
+      <span class="card-type-badge">Mastercard</span>
+      <span class="card-type-badge">Amex</span>
+    </div>
+
+    <form id="payment-form" method="post" action="{% url 'payment_process' %}" onsubmit="return validatePaymentForm()">
+      {% csrf_token %}
+
+      <!-- Titular -->
+      <div class="form-group-custom">
+        <label for="card-name">Nombre del titular</label>
+        <input type="text" id="card-name" name="card_name" class="form-control-custom"
+               placeholder="NOMBRE APELLIDOS" autocomplete="cc-name">
+      </div>
+
+      <!-- Número de tarjeta -->
+      <div class="form-group-custom">
+        <label for="card-number">Número de tarjeta</label>
+        <input type="text" id="card-number" name="card_number" class="form-control-custom"
+               placeholder="1234 5678 9012 3456" autocomplete="cc-number"
+               maxlength="19" inputmode="numeric"
+               oninput="formatCardNumber(this)" onblur="validateCardNumber(this)">
+      </div>
+
+      <!-- Fecha + CVV -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group-custom">
+          <label for="card-exp">Fecha de caducidad</label>
+          <input type="text" id="card-exp" name="card_exp" class="form-control-custom"
+                 placeholder="MM/YY" autocomplete="cc-exp"
+                 maxlength="5" inputmode="numeric"
+                 oninput="formatExpiry(this)" onblur="validateExpiry(this)">
+          <div class="field-error" id="err-exp">Fecha inválida o caducada.</div>
+        </div>
+        <div class="form-group-custom">
+          <label for="card-cvv">CVV</label>
+          <input type="text" id="card-cvv" name="card_cvv" class="form-control-custom"
+                 placeholder="•••" autocomplete="cc-csc"
+                 maxlength="4" inputmode="numeric"
+                 onblur="validateCVV(this)">
+        </div>
+      </div>
+
+      <!-- Boton de pago -->
+      <button type="submit" class="pay-btn" id="pay-btn">
+        <i data-lucide="lock" style="width:18px;"></i>
+        Pagar {{ pedido_data.precio_total }} €
+      </button>
+      <div class="secure-badge">
+        <i data-lucide="shield-check" style="width:14px;"></i>
+        Pago 100% seguro y encriptado
+      </div>
+
+      <div style="margin-top: 1rem; text-align: center;">
+        <a href="{% url 'order_create' %}" style="font-size: 0.85rem; color: var(--ty-text-muted);">
+          ← Volver al pedido
+        </a>
+      </div>
+    </form>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Funcion para formatear el numero de la tarjeta
+  function formatCardNumber(input) {
+    let v = input.value.replace(/\D/g, '').substring(0, 16);
+    let parts = [];
+    for (let i = 0; i < v.length; i += 4) parts.push(v.substring(i, i + 4));
+    input.value = parts.join(' ');
+    if (v.length === 16) setFieldState(input, 'err-number', true);
+  }
+
+  // ── Funcion para formatear la fecha de expiracion
+  function formatExpiry(input) {
+    let v = input.value.replace(/\D/g, '').substring(0, 4);
+    if (v.length >= 3) v = v.substring(0, 2) + '/' + v.substring(2);
+    input.value = v;
+  }
+
+  function setFieldState(input, errId, isValid) {
+    input.classList.toggle('error', !isValid);
+    input.classList.toggle('valid', isValid);
+    const errEl = document.getElementById(errId);
+    if (errEl) errEl.classList.toggle('show', !isValid);
+  }
+
+  // Funcion para validar el numero de la tarjeta
+  function validateCardNumber(input) {
+    const digits = input.value.replace(/\D/g, '');
+    const ok = digits.length >= 13 && digits.length <= 19;
+    setFieldState(input, 'err-number', ok);
+    return ok;
+  }
+  function validateExpiry(input) {
+    try {
+      const match = input.value.match(/^(\d{2})\/(\d{2})$/);
+      if (!match) { setFieldState(input, 'err-exp', false); return false; }
+      const month = parseInt(match[1]);
+      const year = 2000 + parseInt(match[2]);
+      const now = new Date();
+      const ok = month >= 1 && month <= 12 &&
+        (year > now.getFullYear() || (year === now.getFullYear() && month >= now.getMonth() + 1));
+      setFieldState(input, 'err-exp', ok);
+      return ok;
+    } catch(e) { return true; }
+  }
+  function validateCVV(input) {
+    const ok = /^\d{3,4}$/.test(input.value);
+    setFieldState(input, 'err-cvv', ok);
+    return ok;
+  }
+
+  // Funcion para validar el formulario de pago
+  function validatePaymentForm() {
+    try {
+      const nameInput = document.getElementById('card-name');
+      const numInput  = document.getElementById('card-number');
+      const expInput  = document.getElementById('card-exp');
+      const cvvInput  = document.getElementById('card-cvv');
+
+      const nameOk = nameInput.value.trim().length >= 2;
+      setFieldState(nameInput, 'err-name', nameOk);
+
+      const numOk  = validateCardNumber(numInput);
+      const expOk  = validateExpiry(expInput);
+      const cvvOk  = validateCVV(cvvInput);
+
+      if (!nameOk || !numOk || !expOk || !cvvOk) {
+        document.querySelector('.error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return false;
+      }
+
+      // Deshabilitar el boton y mostrar un indicador de carga
+      const btn = document.getElementById('pay-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Procesando…';
+      return true;
+    } catch(e) {
+      // Si hay cualquier error JS, dejamos que el formulario se envíe igualmente
+      console.error('Checkout validation error:', e);
+      return true;
+    }
+  }
+</script>
+{% endblock %}
+
+

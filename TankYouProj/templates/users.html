@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Usuarios | TankYou{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h2>Usuarios</h2>
+        <p style="color: var(--ty-text-muted); font-size: 0.9rem; margin-bottom: 0;">
+            Listado de usuarios registrados
+        </p>
+    </div>
+</div>
+
+{% if usuarios %}
+<div class="ty-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Email</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td><strong>{{ usuario.nombre }}</strong></td>
+                <td>{{ usuario.apellidos }}</td>
+                <td style="color: var(--ty-text-muted);">{{ usuario.email }}</td>
+                <td>
+                    <span class="ty-badge {% if usuario.verificado %}active{% else %}pending{% endif %}">
+                        {% if usuario.verificado %}Verificado{% else %}Pendiente{% endif %}
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">
+        <i data-lucide="users" style="width:36px;height:36px;color:var(--ty-accent);"></i>
+    </div>
+    <h4>Sin usuarios</h4>
+    <p>No hay usuarios registrados en la plataforma.</p>
+</div>
+{% endif %}
+
+<!-- Pagination -->
+{% if page_obj %}
+{% if page_obj.has_previous or page_obj.has_next %}
+<div class="ty-pagination">
+    {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">
+        <i data-lucide="chevron-left" style="width:16px;height:16px;"></i>
+    </a>
+    {% endif %}
+
+    <span class="current">
+        {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">
+        <i data-lucide="chevron-right" style="width:16px;height:16px;"></i>
+    </a>
+    {% endif %}
+</div>
+{% endif %}
+{% endif %}
+
+{% endblock %}

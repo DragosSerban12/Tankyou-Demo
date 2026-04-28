@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Pedidos | TankYou{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h2>Pedidos</h2>
+        <p style="color: var(--ty-text-muted); font-size: 0.9rem; margin-bottom: 0;">
+            Historial de tus pedidos de combustible
+        </p>
+    </div>
+    <a href="{% url 'order_create' %}" class="ty-btn ty-btn-primary">
+        <i data-lucide="plus" class="me-1"></i> Nuevo Pedido
+    </a>
+</div>
+
+{% if pedidos %}
+<div class="ty-table mb-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Vehiculo</th>
+                <th>Litros</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th class="text-end">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in pedidos %}
+            <tr>
+                <td><strong>#{{ p.id }}</strong></td>
+                <td>{{ p.usuario.nombre }}</td>
+                <td>{{ p.vehiculo }}</td>
+                <td>{{ p.cantidad_litros }} L</td>
+                <td>{{ p.precio_total }} &euro;</td>
+                <td>
+                    <span class="ty-badge {% if p.estado == 'completado' %}active{% elif p.estado == 'pendiente' %}pending{% elif p.estado == 'cancelado' or p.estado == 'error' %}error{% else %}info{% endif %}">
+                        {{ p.get_estado_display }}
+                    </span>
+                </td>
+                <td style="color: var(--ty-text-muted);">{{ p.fecha_pedido }}</td>
+                <td class="text-end">
+                    {% if p.estado == 'pendiente' %}
+                    <form action="{% url 'order_cancel' p.id %}" method="post" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que deseas cancelar este pedido?')">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size: 0.7rem; padding: 2px 8px; border-radius: 6px;">
+                            <i data-lucide="x-circle" style="width: 12px; height: 12px; margin-right: 2px;"></i> Cancelar
+                        </button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">
+        <i data-lucide="package" style="width:36px;height:36px;color:var(--ty-accent);"></i>
+    </div>
+    <h4>Sin pedidos</h4>
+    <p>Todavia no tienes ningun pedido registrado.</p>
+</div>
+{% endif %}
+
+
+{% endblock %}

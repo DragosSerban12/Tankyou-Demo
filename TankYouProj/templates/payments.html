@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Pagos | TankYou{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h2>Pagos</h2>
+        <p style="color: var(--ty-text-muted); font-size: 0.9rem; margin-bottom: 0;">
+            Historial de pagos y transacciones
+        </p>
+    </div>
+</div>
+
+{% if pagos %}
+<div class="ty-table mb-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Metodo</th>
+                <th>Importe</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in pagos %}
+            <tr>
+                <td><strong>#{{ p.id }}</strong></td>
+                <td>{{ p.metodo_pago }}</td>
+                <td style="font-weight: 600;">{{ p.importe }} &euro;</td>
+                <td>
+                    <span class="ty-badge {% if p.estado_pago == 'aprobado' %}active{% elif p.estado_pago == 'pendiente' %}pending{% else %}info{% endif %}">
+                        {{ p.get_estado_pago_display }}
+                    </span>
+                </td>
+                <td style="color: var(--ty-text-muted);">{{ p.fecha_pago }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">
+        <i data-lucide="credit-card" style="width:36px;height:36px;color:var(--ty-accent);"></i>
+    </div>
+    <h4>Sin pagos</h4>
+    <p>Todavia no tienes ningun pago registrado.</p>
+</div>
+{% endif %}
+
+{% if reembolsos %}
+<div class="page-header" style="margin-top: 1rem;">
+    <div>
+        <h2 style="font-size: 1.3rem;">Reembolsos</h2>
+        <p style="color: var(--ty-text-muted); font-size: 0.9rem; margin-bottom: 0;">
+            Solicitudes de devolucion
+        </p>
+    </div>
+</div>
+
+<div class="ty-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Motivo</th>
+                <th>Estado</th>
+                <th>Solicitado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in reembolsos %}
+            <tr>
+                <td><strong>#{{ r.id }}</strong></td>
+                <td>{{ r.motivo|truncatewords:10 }}</td>
+                <td>
+                    <span class="ty-badge {% if r.estado == 'aprobado' %}active{% elif r.estado == 'pendiente' %}pending{% else %}error{% endif %}">
+                        {{ r.get_estado_display }}
+                    </span>
+                </td>
+                <td style="color: var(--ty-text-muted);">{{ r.fecha_solicitud }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% endblock %}

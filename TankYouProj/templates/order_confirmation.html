@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Pedido Confirmado | TankYou{% endblock %}
+
+{% block extra_css %}
+<style>
+  .confirmation-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .confirmed-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #28a745;
+  }
+
+  .confirmed-sub {
+    color: var(--ty-text-muted);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .paid-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #28a745;
+    color: white;
+    padding: 8px 24px;
+    border-radius: 50px;
+    font-weight: 700;
+    margin-bottom: 2rem;
+  }
+
+  .order-detail-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    border: 1px solid var(--ty-border, #e9ecef);
+    text-align: left;
+    margin-bottom: 1.5rem;
+  }
+
+  .order-detail-card h5 {
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--ty-border, #f0f0f0);
+    font-size: 0.95rem;
+  }
+
+  .detail-row:last-child {
+    border-bottom: none;
+  }
+
+  .detail-row .dl {
+    color: var(--ty-text-muted, #6c757d);
+  }
+
+  .detail-row .dv {
+    font-weight: 600;
+  }
+
+  .total-row {
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 2px solid #28a745;
+  }
+
+  .total-row .dv {
+    color: #28a745;
+    font-size: 1.2rem;
+  }
+
+  .pago-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(40,167,69,0.07);
+    border: 1px solid rgba(40,167,69,0.2);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    color: #28a745;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    justify-content: center;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="confirmation-wrapper">
+
+  <h2 class="confirmed-title">¡Pago completado!</h2>
+  <p class="confirmed-sub">
+    Tu pedido ha sido confirmado correctamente.
+  </p>
+
+  <div>
+    <span class="paid-badge">
+      PAGADO
+    </span>
+  </div>
+
+  {% if pago %}
+  <div class="pago-info">
+    Pago con tarjeta · {{ pago.fecha_pago|date:"d/m/Y H:i" }} · Ref. #{{ pago.id }}
+  </div>
+  {% endif %}
+
+  <div class="order-detail-card">
+
+    <h5>
+      Resumen del pedido #{{ pedido.id }}
+    </h5>
+
+    <div class="detail-row">
+      <span class="dl">Vehículo</span>
+      <span class="dv">{{ pedido.vehiculo }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="dl">Fecha del servicio</span>
+      <span class="dv">
+        {% if pedido.fecha_servicio %}
+          {{ pedido.fecha_servicio|date:"d/m/Y" }}
+        {% else %}
+          –
+        {% endif %}
+      </span>
+    </div>
+
+    <div class="detail-row">
+      <span class="dl">Hora</span>
+      <span class="dv">
+        {% if pedido.hora_servicio %}
+          {{ pedido.hora_servicio|time:"H:i" }}
+        {% else %}
+          –
+        {% endif %}
+      </span>
+    </div>
+
+    <div class="detail-row">
+      <span class="dl">Ubicación</span>
+      <span class="dv">{{ pedido.ubicacion }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="dl">Cantidad</span>
+      <span class="dv">{{ pedido.cantidad_litros }} L</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="dl">Estado del pedido</span>
+      <span class="dv">
+        <span class="ty-badge active">{{ pedido.get_estado_display }}</span>
+      </span>
+    </div>
+
+    <div class="detail-row total-row">
+      <span class="dl"><strong>Total pagado</strong></span>
+      <span class="dv">{{ pedido.precio_total }} €</span>
+    </div>
+
+  </div>
+
+  <div class="action-buttons">
+
+    <a href="{% url 'orders' %}" class="ty-btn ty-btn-primary">
+      Ver mis pedidos
+    </a>
+
+    <a href="{% url 'payments' %}" class="ty-btn ty-btn-outline">
+      Historial de pagos
+    </a>
+
+  </div>
+
+</div>
+
+{% endblock %}

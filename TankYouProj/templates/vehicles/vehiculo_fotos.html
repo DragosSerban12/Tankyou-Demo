@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Fotos - {{ vehiculo.marca }} {{ vehiculo.modelo }} | TankYou{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h2>{{ vehiculo.marca }} {{ vehiculo.modelo }}</h2>
+        <p style="color: var(--ty-text-muted); font-size: 0.9rem; margin-bottom: 0;">
+            Galeria de fotos &middot; {{ vehiculo.matricula }}
+        </p>
+    </div>
+    <a href="{% url 'vehicles' %}" class="btn btn-ty-outline">
+        <i data-lucide="arrow-left" style="width:14px;height:14px;margin-right:4px;"></i>
+        Volver
+    </a>
+</div>
+
+{% if fotos %}
+<div class="photo-grid">
+    {% for foto in fotos %}
+    <div class="photo-item">
+        <img src="{{ foto.imagen.url }}"
+             alt="Foto de {{ vehiculo.marca }} {{ vehiculo.modelo }}">
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">
+        <i data-lucide="image" style="width:36px;height:36px;color:var(--ty-accent);"></i>
+    </div>
+    <h4>Sin fotos</h4>
+    <p>Este vehiculo no tiene fotos registradas.</p>
+</div>
+{% endif %}
+
+{% endblock %}

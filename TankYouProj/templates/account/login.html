@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar sesion | TankYou{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <div class="login-card">
+        <!-- Logo -->
+        <div class="text-center mb-4">
+            <div style="width: 48px; height: 48px; background: rgba(245,158,11,0.1); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                <i data-lucide="log-in" style="width:22px;height:22px;color:#F59E0B;"></i>
+            </div>
+            <h2>Bienvenido de nuevo</h2>
+            <p style="color: var(--ty-text-muted); font-size: 0.9rem; margin-bottom: 0;">
+                Inicia sesion para gestionar tus vehiculos y recargas
+            </p>
+        </div>
+
+        {% if form.errors %}
+        <div class="alert alert-danger d-flex align-items-center gap-2" style="border-radius: 10px; font-size: 0.875rem;">
+            <i data-lucide="alert-circle" style="width:16px;height:16px;flex-shrink:0;"></i> 
+            Email o contrasena incorrectos
+        </div>
+        {% endif %}
+
+        <form method="post" class="ty-form">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label>Usuario:</label>
+                {{ form.login }}
+            </div>
+
+            <div class="mb-2">
+                <label>Contraseña:</label>
+                {{ form.password }}
+            </div>
+
+            <div class="text-center mb-3">
+                <a href="{% url 'account_reset_password' %}">
+                    ¿Ha olvidado su contraseña?
+                </a>
+            </div>
+
+            <div class="d-grid mt-3 mb-3">
+                <button type="submit" class="btn btn-ty-dark">
+                    Iniciar sesión
+                </button>
+            </div>
+        </form>
+
+
+        <div class="text-center" style="padding-top: 1rem; border-top: 1px solid var(--ty-border);">
+            <p style="color: var(--ty-text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;">
+                No tienes cuenta?
+            </p>
+            <a href="{% url 'usuario_crear' %}" class="btn btn-ty-outline btn-sm">
+                Crear cuenta gratis
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

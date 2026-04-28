@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Inicio | TankYou{% endblock %}
+
+{% block fullwidth %}
+
+<!-- BANNER -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="hero-badge animate-in">
+                    <i data-lucide="zap" style="width:14px;height:14px;"></i>
+                    Recarga inteligente de combustible
+                </div>
+
+                <h1 class="mb-4 animate-in animate-delay-1">
+                    Reposta tu vehiculo sin colas ni tarjetas
+                </h1>
+
+                <p class="hero-subtitle mb-4 animate-in animate-delay-2">
+                    TankYou conecta tu vehiculo con las principales gasolineras
+                    para que repostes de forma rapida, segura y 100% digital.
+                </p>
+
+                {% if not user.is_authenticated %}
+                <div class="d-flex gap-3 flex-wrap animate-in animate-delay-3">
+                    <a href="{% url 'usuario_crear' %}" class="btn btn-ty-primary">
+                        Crear cuenta gratis
+                        <i data-lucide="arrow-right" style="width:16px;height:16px;margin-left:6px;"></i>
+                    </a>
+                    <a href="{% url 'account_login' %}" class="btn btn-ty-secondary">
+                        Iniciar sesion
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-5 d-none d-lg-block">
+                <div class="text-end animate-in animate-delay-4">
+                    <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 2rem;">
+                        <div class="d-flex justify-content-around mb-4">
+                            <div class="text-center">
+                                <div style="font-size: 2rem; font-weight: 800; color: #F59E0B;">10</div>
+                                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Usuarios activos</div>
+                            </div>
+                            <div class="text-center">
+                                <div style="font-size: 2rem; font-weight: 800; color: #F59E0B;">2</div>
+                                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Gasolineras</div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-around">
+                            <div class="text-center">
+                                <div style="font-size: 2rem; font-weight: 800; color: #F59E0B;">24/7</div>
+                                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Disponibilidad</div>
+                            </div>
+                            <div class="text-center">
+                                <div style="font-size: 2rem; font-weight: 800; color: #F59E0B;">100%</div>
+                                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Digital</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block content %}
+
+<!-- SOBRE NOSOTROS -->
+<section class="section-block" style="padding-top: 2rem;">
+    <div class="row align-items-center">
+        <div class="col-lg-5 mb-4 mb-lg-0">
+            <span class="ty-badge info mb-3" style="display: inline-flex;">Sobre nosotros</span>
+            <h2 class="section-title">La forma mas inteligente de repostar</h2>
+            <p class="section-subtitle">
+                TankYou es una plataforma de recarga telematica que permite a los conductores
+                gestionar sus vehiculos y repostajes desde un unico lugar.
+            </p>
+        </div>
+        <div class="col-lg-7">
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <div class="ty-card">
+                        <div class="ty-card-icon amber">
+                            <i data-lucide="fuel" style="width:22px;height:22px;"></i>
+                        </div>
+                        <h5 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem;">Recarga telematica</h5>
+                        <p style="font-size: 0.85rem; color: var(--ty-text-muted); margin-bottom: 0;">
+                            Reposta sin tarjetas fisicas ni colas. Todo desde tu cuenta.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="ty-card">
+                        <div class="ty-card-icon blue">
+                            <i data-lucide="car" style="width:22px;height:22px;"></i>
+                        </div>
+                        <h5 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem;">Gestion de vehiculos</h5>
+                        <p style="font-size: 0.85rem; color: var(--ty-text-muted); margin-bottom: 0;">
+                            Controla todos tus vehiculos desde tu cuenta personal.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="ty-card">
+                        <div class="ty-card-icon green">
+                            <i data-lucide="history" style="width:22px;height:22px;"></i>
+                        </div>
+                        <h5 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem;">Historial completo</h5>
+                        <p style="font-size: 0.85rem; color: var(--ty-text-muted); margin-bottom: 0;">
+                            Consulta consumos y repostajes anteriores al detalle.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="ty-card">
+                        <div class="ty-card-icon dark">
+                            <i data-lucide="shield-check" style="width:22px;height:22px;"></i>
+                        </div>
+                        <h5 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem;">Seguridad avanzada</h5>
+                        <p style="font-size: 0.85rem; color: var(--ty-text-muted); margin-bottom: 0;">
+                            Plataforma segura con encriptacion de datos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section class="section-block">
+    <div class="text-center mb-5">
+        <span class="ty-badge pending mb-3" style="display: inline-flex;">Como funciona</span>
+        <h2 class="section-title mx-auto" style="max-width: 450px;">Tres pasos para empezar</h2>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <div style="width: 48px; height: 48px; background: rgba(245,158,11,0.1); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; color: var(--ty-accent); font-weight: 800; font-size: 1.1rem;">
+                    1
+                </div>
+                <h5>Crea tu cuenta</h5>
+                <p>Registrate en la plataforma con tus datos personales en menos de un minuto.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <div style="width: 48px; height: 48px; background: rgba(59,130,246,0.1); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; color: var(--ty-info); font-weight: 800; font-size: 1.1rem;">
+                    2
+                </div>
+                <h5>Registra tu vehiculo</h5>
+                <p>Agrega los datos de tu coche o moto: matricula, marca, modelo y tipo de combustible.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card text-center">
+                <div style="width: 48px; height: 48px; background: rgba(16,185,129,0.1); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; color: var(--ty-success); font-weight: 800; font-size: 1.1rem;">
+                    3
+                </div>
+                <h5>Reposta al instante</h5>
+                <p>Selecciona el tipo de combustible, elige la cantidad de litros y confirma tu pedido.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- GASOLINERAS ASOCIADAS -->
+<section class="section-block" style="padding-top: 3rem; padding-bottom: 2rem;">
+    <div class="text-center mb-4">
+        <p style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; color: var(--ty-text-muted);">
+            Nuestras gasolineras asociadas
+        </p>
+    </div>
+    <div class="d-flex justify-content-center align-items-center gap-5 flex-wrap">
+        <img src="{% static 'img/repsol.png' %}" alt="Repsol" class="partner-logo">
+        <img src="{% static 'img/cepsa.jpg' %}" alt="Cepsa" class="partner-logo">
+        <img src="{% static 'img/shell.jpg' %}" alt="Shell" class="partner-logo">
+    </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="section-block" style="padding-bottom: 4rem;">
+    <div class="contact-section">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h3>Contacta con nosotros</h3>
+                <p>Estamos aqui para ayudarte con cualquier duda sobre la plataforma.</p>
+            </div>
+            <div class="col-lg-6">
+                <div class="d-flex flex-column gap-3">
+                    <div class="contact-item">
+                        <i data-lucide="mail" style="width:18px;height:18px;"></i>
+                        contacto@tankyou.com
+                    </div>
+                    <div class="contact-item">
+                        <i data-lucide="phone" style="width:18px;height:18px;"></i>
+                        +34 600 000 000
+                    </div>
+                    <div class="contact-item">
+                        <i data-lucide="map-pin" style="width:18px;height:18px;"></i>
+                        Elche, España
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

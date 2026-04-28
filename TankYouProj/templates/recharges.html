@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Recargas | TankYou{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h2>Tipos de recarga</h2>
+        <p style="color: var(--ty-text-muted); font-size: 0.9rem; margin-bottom: 0;">
+            Precios actualizados de los tipos de combustible
+        </p>
+    </div>
+</div>
+
+{% if recargas %}
+<div class="row g-4">
+    {% for r in recargas %}
+    <div class="col-md-4">
+        <div class="feature-card">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem;">
+                <div style="width: 44px; height: 44px; background: rgba(245,158,11,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="fuel" style="width:20px;height:20px;color:var(--ty-accent);"></i>
+                </div>
+                <div>
+                    <h5 style="margin-bottom: 0;">{{ r.get_tipo_combustible_display }}</h5>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: baseline; gap: 4px; margin-bottom: 0.75rem;">
+                <span style="font-size: 2rem; font-weight: 800; letter-spacing: -0.04em; color: var(--ty-primary);">
+                    {{ r.precio_por_litro }}
+                </span>
+                <span style="font-size: 0.9rem; color: var(--ty-text-muted); font-weight: 500;">&euro;/litro</span>
+            </div>
+
+            {% if r.descripcion %}
+            <p style="font-size: 0.85rem; color: var(--ty-text-muted); margin-bottom: 0;">
+                {{ r.descripcion }}
+            </p>
+            {% endif %}
+
+            <div style="margin-top: 1rem;">
+                <span class="ty-badge {% if r.activo %}active{% else %}error{% endif %}">
+                    {% if r.activo %}Disponible{% else %}No disponible{% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">
+        <i data-lucide="fuel" style="width:36px;height:36px;color:var(--ty-accent);"></i>
+    </div>
+    <h4>Sin recargas disponibles</h4>
+    <p>Actualmente no hay tipos de recarga registrados en el sistema.</p>
+</div>
+{% endif %}
+
+{% endblock %}

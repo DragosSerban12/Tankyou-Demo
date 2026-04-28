@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Nuevo Pedido | TankYou{% endblock %}
+
+{% block extra_css %}
+<style>
+
+/* CONTENEDOR */
+.schedule-wrapper {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+}
+
+/* TABLA */
+.schedule-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 12px;
+}
+
+/* HEADERS */
+.schedule-table th {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* HORA */
+.hour-col {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #495057;
+    text-align: right;
+    padding-right: 10px;
+    white-space: nowrap;
+}
+
+/* SLOT */
+.slot {
+    width: 85px;
+    height: 55px;
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+/* HOVER SLOT */
+.slot:hover:not(.unavailable) {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(40,167,69,0.15);
+}
+
+/* BOTÓN INTERNO */
+.slot-btn {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: all 0.2s ease;
+}
+
+/* HOVER BOTÓN */
+.slot-btn:hover {
+    transform: scale(1.05);
+}
+
+/* CLICK */
+.slot-btn:active {
+    transform: scale(0.95);
+}
+
+/* SELECCIONADO */
+.slot.selected .slot-btn {
+    background: linear-gradient(135deg, #1e7e34, #28a745) !important;
+    color: white !important;
+    border: none;
+    box-shadow: 0 6px 16px rgba(40,167,69,0.4);
+}
+
+/* efecto "activo" persistente */
+.slot.selected {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(40,167,69,0.25);
+}
+
+/* BAJA DISPONIBILIDAD */
+.slot.low .slot-btn {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #000 !important;
+}
+
+/* NO DISPONIBLE */
+.slot.unavailable {
+    background: #f8f9fa;
+    border-color: #f1f3f5;
+}
+
+.slot.unavailable i {
+    color: #adb5bd;
+}
+
+/* HEADER DIA */
+.day-header {
+    font-size: 0.7rem;
+    color: #28a745;
+    display: block;
+}
+
+/* RESUMEN */
+.selection-box {
+    background: #f1f8f4;
+    border: 1px solid #d4edda;
+    border-radius: 10px;
+}
+
+/* SCROLL */
+.table-responsive {
+    overflow-x: auto;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h3 class="fw-bold">Nuevo Pedido</h3>
+        <p class="text-muted mb-0">Selecciona un horario y completa los datos</p>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- HORARIO -->
+        <div class="col-lg-8">
+            <div class="schedule-wrapper">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-semibold m-0">1. Selecciona horario</h5>
+                    <span class="badge bg-light text-dark">
+                        <i data-lucide="users" style="width:14px;"></i>
+                        Plazas disponibles
+                    </span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="schedule-table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                {% for dia in proximos_7_dias %}
+                                <th>
+                                    <span class="day-header">{{ dia|date:"D" }}</span>
+                                    {{ dia|date:"d/m" }}
+                                </th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for fila in turno_grid %}
+                            <tr>
+                                <td class="hour-col">{{ fila.hora }}</td>
+
+                                {% for slot in fila.slots %}
+                                <td>
+                                    {% if slot.turno %}
+                                    <div class="slot 
+                                        {% if not slot.disponible %}unavailable
+                                        {% elif slot.plazas_libres < 2 %}low
+                                        {% endif %}"
+                                        data-id="{{ slot.turno.id }}">
+
+                                        {% if slot.disponible %}
+                                        <button type="button"
+                                                class="btn btn-success slot-btn"
+                                                onclick="selectSlot(this.parentElement)">
+                                            Disponible
+                                        </button>
+                                        {% else %}
+                                        <div class="d-flex justify-content-center align-items-center h-100">
+                                            <i data-lucide="x"></i>
+                                        </div>
+                                        {% endif %}
+
+                                    </div>
+                                    {% else %}
+                                    <div class="slot unavailable d-flex justify-content-center align-items-center">
+                                        -
+                                    </div>
+                                    {% endif %}
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="turno-error" class="text-danger mt-3 d-none">
+                    Selecciona un horario antes de continuar
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+
+                    <h5 class="fw-semibold mb-3">2. Detalles</h5>
+
+                    <form method="post" id="order-form" onsubmit="return validateForm()">
+                        {% csrf_token %}
+
+                        {{ form.vehiculo|as_crispy_field }}
+                        {{ form.cantidad_litros|as_crispy_field }}
+                        {{ form.ubicacion|as_crispy_field }}
+                        {{ form.turno }}
+
+                        <div class="mt-4">
+
+                            <div id="selection-summary" class="selection-box p-3 mb-3 d-none">
+                                <small class="text-muted">Horario seleccionado:</small>
+                                <div id="selected-time-text" class="fw-bold"></div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100 mb-2">
+                                Confirmar Pedido
+                            </button>
+
+                            <a href="{% url 'orders' %}" class="btn btn-outline-secondary w-100">
+                                Cancelar
+                            </a>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function selectSlot(element) {
+    if (element.classList.contains('unavailable')) return;
+
+    document.querySelectorAll('.slot.selected')
+        .forEach(s => s.classList.remove('selected'));
+
+    element.classList.add('selected');
+
+    const turnoId = element.getAttribute('data-id');
+    document.getElementById('id_turno').value = turnoId;
+
+    const day = element.closest('table')
+        .querySelector('thead th:nth-child(' + (element.parentNode.cellIndex + 1) + ')')
+        .innerText.trim();
+
+    const hour = element.closest('tr')
+        .querySelector('td:first-child')
+        .innerText.trim();
+
+    document.getElementById('selection-summary').classList.remove('d-none');
+    document.getElementById('selected-time-text').innerText =
+        day.replace('\n', ' ') + ' a las ' + hour;
+
+    document.getElementById('turno-error').classList.add('d-none');
+}
+
+function validateForm() {
+    const turnoId = document.getElementById('id_turno').value;
+
+    if (!turnoId) {
+        document.getElementById('turno-error').classList.remove('d-none');
+        return false;
+    }
+
+    return true;
+}
+</script>
+{% endblock %}
