@@ -24,6 +24,7 @@ https://tankyouapp.online/
 - Django
 - PostgreSQL
 - Docker
+- Docker Compose
 - Docker Swarm
 - Nginx
 - HTML / CSS / JavaScript
@@ -35,41 +36,16 @@ https://tankyouapp.online/
 - Contenedorización completa con Docker
 - Proxy inverso con Nginx
 
----
+## 💻 Ejecución local
 
-# TankYou
+> La configuración de producción pertenece a un servidor privado y no está incluida en este repositorio.
 
-## 🇬🇧 Description
+Para ejecutar el proyecto en local solo necesitas:
 
-TankYou is a **remote fuel recharge web application**, developed as a final DAW project.
-
-The platform allows customers to manage the full process online:
-
-- User registration and login
-- Vehicle registration and management
-- Booking fuel recharges by selecting **date and time**
-- Smart schedule system with **maximum recharges per time slot**
-- Easy selection of the most convenient available slot
-- Internal management panel for orders and recharges
-
-The application is designed to digitalize and optimize scheduled fuel refill services.
-
-## 🚀 Live Demo
-
-https://tankyouapp.online/
-
-## 🛠 Tech Stack
-
-- Django
-- PostgreSQL
 - Docker
-- Docker Swarm
-- Nginx
-- HTML / CSS / JavaScript
+- Docker Compose
 
-## ⚙️ Infrastructure
+### Pasos
 
-- Real server deployment
-- Development / production environment separation
-- Full containerized architecture with Docker
-- Reverse proxy using Nginx
+```bash
+docker compose up --build
