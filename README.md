@@ -19,6 +19,10 @@ La aplicación está pensada para digitalizar y optimizar el proceso de repostaj
 
 https://tankyouapp.online/
 
+## 🚀 Acceso
+Usuario: demo@gmail.com
+Contraseña: 123
+
 ## 🛠 Tecnologías utilizadas
 
 - Django
@@ -71,6 +75,10 @@ The application is designed to digitalize and optimize the scheduled refueling p
 ## 🚀 Live Demo
 
 https://tankyouapp.online/
+
+## 🚀 Acceso
+User: demo@gmail.com
+Password: 123
 
 ## 🛠 Technologies Used
 
